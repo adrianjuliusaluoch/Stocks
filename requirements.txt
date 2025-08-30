@@ -5,3 +5,4 @@ pyarrow
 google-cloud-bigquery  
 db-dtypes  
 pandas_gbq
+pyjanitor
