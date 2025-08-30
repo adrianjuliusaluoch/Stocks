@@ -42,8 +42,8 @@ if num_rows <= 481:
 # Extract Data, Convert to DataFrame
 df = pd.DataFrame(worksheet.get('A2:Z480'), columns=worksheet.row_values(1))
 
-# Original Data.clean_names()
-data = df.copy()
+# Original Data
+data = df.copy().clean_names()
 
 # Standardize Column Names
 data.columns = data.columns.str.lower().str.replace(' ', '_').str.replace(r'[()]', '', regex=True)
@@ -63,6 +63,7 @@ worksheet.delete_rows(2, 120000)
 
 # Exit 
 print(f'Cryptocurrency Data Export to Google BigQuery Successful')
+
 
 
 
