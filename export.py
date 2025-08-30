@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import time
+import janitor
 
 import pandas as pd
 import gspread
@@ -41,7 +42,7 @@ if num_rows <= 481:
 # Extract Data, Convert to DataFrame
 df = pd.DataFrame(worksheet.get('A2:Z480'), columns=worksheet.row_values(1))
 
-# Original Data
+# Original Data.clean_names()
 data = df.copy()
 
 # Standardize Column Names
@@ -62,6 +63,7 @@ worksheet.delete_rows(2, 120000)
 
 # Exit 
 print(f'Cryptocurrency Data Export to Google BigQuery Successful')
+
 
 
 
