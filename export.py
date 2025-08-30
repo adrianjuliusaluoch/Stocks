@@ -47,11 +47,8 @@ data = df.copy()
 # Standardize Column Names
 data.columns = data.columns.str.lower().str.replace(' ', '_').str.replace(r'[()]', '', regex=True)
 
-# Standardize Data Types
-data['price_usd'] = data['price_usd'].astype(str)
-
 # Define Table ID
-table_id = 'crypto-stocks-01.storage.top_cryptocurrency'
+table_id = 'crypto-stocks-01.storage.top_stocks'
 
 # Export Data to BigQuery
 job = client.load_table_from_dataframe(data, table_id)
@@ -61,10 +58,11 @@ while job.state != 'DONE':
     print(job.state)
 
 # Delete Exported Rows
-worksheet.delete_rows(2, 481)
+worksheet.delete_rows(2, 120000)
 
 # Exit 
 print(f'Cryptocurrency Data Export to Google BigQuery Successful')
+
 
 
 
