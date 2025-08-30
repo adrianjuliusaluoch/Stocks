@@ -40,7 +40,7 @@ if num_rows <= 481:
     sys.exit()  # Exit the script if 480 or fewer rows are found
 
 # Extract Data, Convert to DataFrame
-df = pd.DataFrame(worksheet.get('A2:Z480'), columns=worksheet.row_values(1))
+df = pd.DataFrame(worksheet.get('A2:Z120486'), columns=worksheet.row_values(1))
 
 # Original Data
 data = df.copy().clean_names()
@@ -59,10 +59,11 @@ while job.state != 'DONE':
     print(job.state)
 
 # Delete Exported Rows
-worksheet.delete_rows(2, 120000)
+worksheet.delete_rows(2, 120486)
 
 # Exit 
 print(f'Cryptocurrency Data Export to Google BigQuery Successful')
+
 
 
 
