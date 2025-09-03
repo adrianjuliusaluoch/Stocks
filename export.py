@@ -34,10 +34,10 @@ worksheet = spreadsheet.sheet1  # Select the first sheet
 all_records = worksheet.get_all_records()
 num_rows = len(all_records)
 
-# Check if there are more than 40 rows of data
+# Check if there are more than 30 rows of data
 if num_rows <= 31:
     print(f"Only {num_rows} rows found. Exiting without processing.")
-    sys.exit()  # Exit the script if 40 or fewer rows are found
+    sys.exit()  # Exit the script if 30 or fewer rows are found
 
 # Extract Data, Convert to DataFrame
 df = pd.DataFrame(worksheet.get('A2:Z31'), columns=worksheet.row_values(1))
@@ -148,6 +148,7 @@ print(f"Data {data.shape} has been successfully retrieved, saved, and appended t
 
 # Exit 
 print(f'Stocks Data Export to Google BigQuery Successful')
+
 
 
 
