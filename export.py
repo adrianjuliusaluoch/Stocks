@@ -34,10 +34,10 @@ worksheet = spreadsheet.sheet1  # Select the first sheet
 all_records = worksheet.get_all_records()
 num_rows = len(all_records)
 
-# Check if there are more than 120 rows of data
+# Check if there are more than 40 rows of data
 if num_rows <= 41:
     print(f"Only {num_rows} rows found. Exiting without processing.")
-    sys.exit()  # Exit the script if 120 or fewer rows are found
+    sys.exit()  # Exit the script if 40 or fewer rows are found
 
 # Extract Data, Convert to DataFrame
 df = pd.DataFrame(worksheet.get('A2:Z41'), columns=worksheet.row_values(1))
@@ -61,8 +61,96 @@ while job.state != 'DONE':
 # Delete Exported Rows
 worksheet.delete_rows(2, 41)
 
+# Define SQL Query to Retrieve Open Weather Data from Google Cloud BigQuery
+sql = (
+    'SELECT *'
+    'FROM `crypto-stocks-01.storage.top_stocks`'
+           )
+    
+# Run SQL Query
+data = client.query(sql).to_dataframe()
+
+# Check Shape of data from BigQuery
+print(f"Shape of dataset from BigQuery : {data.shape}")
+
+# Delete Original Table
+client.delete_table(table_id)
+print(f"Table deleted successfully.")
+
+# Check Total Number of Duplicate Records
+duplicated = data.duplicated(subset=[
+    'timestamp', 
+    'name', 
+    'last', 
+    'high', 
+    'low', 
+    'chg_', 
+    'chg_%', 
+    'vol_', 
+    'time']).sum()
+    
+# Remove Duplicate Records
+data.drop_duplicates(subset=[
+    'timestamp', 
+    'name', 
+    'last', 
+    'high', 
+    'low', 
+    'chg_', 
+    'chg_%', 
+    'vol_', 
+    'time'], inplace=True)
+
+# Define the dataset ID and table ID
+dataset_id = 'storage'
+table_id = 'top_stocks'
+    
+# Define the table schema for new table
+schema = [
+        bigquery.SchemaField("timestamp", "STRING"),
+        bigquery.SchemaField("name", "STRING"),
+        bigquery.SchemaField("last", "STRING"),
+        bigquery.SchemaField("high", "STRING"),
+        bigquery.SchemaField("low", "STRING"),
+        bigquery.SchemaField("chg_", "STRING"),
+        bigquery.SchemaField("chg_%", "STRING"),
+        bigquery.SchemaField("vol_", "STRING"),
+        bigquery.SchemaField("time", "STRING"),
+    ]
+    
+# Define the table reference
+table_ref = client.dataset(dataset_id).table(table_id)
+    
+# Create the table object
+table = bigquery.Table(table_ref, schema=schema)
+
+try:
+    # Create the table in BigQuery
+    table = client.create_table(table)
+    print(f"Table {table.table_id} created successfully.")
+except Exception as e:
+    print(f"Table {table.table_id} failed")
+
+# Define the BigQuery table ID
+table_id = 'crypto-stocks-01.storage.top_stocks'
+
+# Load the data into the BigQuery table
+job = client.load_table_from_dataframe(data, table_id)
+
+# Wait for the job to complete
+while job.state != 'DONE':
+    time.sleep(2)
+    job.reload()
+    print(job.state)
+    
+# Return Data Info
+print(f"Data {data.shape} has been successfully retrieved, saved, and appended to the BigQuery table.")
+
 # Exit 
-print(f'Cryptocurrency Data Export to Google BigQuery Successful')
+print(f'Stocks Data Export to Google BigQuery Successful')
+
+
+
 
 
 
