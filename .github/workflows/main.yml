@@ -2,11 +2,11 @@ name: Export Google Sheets to Google BigQuery
 
 on:
   schedule:
-    - cron: '0 */1 * * *'  # Runs every 4 hours at 00, 04, 08, 12, 16, and 20 UTC
+    - cron: '*/30 * * * *'  # Runs every 30 minutes
   workflow_dispatch:  # ✅ Enables manual trigger
-
+  
 jobs:
-  get_and_upload_crypto_data:
+  get_and_upload_stocks_data:
     runs-on: ubuntu-latest
 
     steps:
