@@ -40,7 +40,7 @@ if num_rows <= 31:
     sys.exit()  # Exit the script if 30 or fewer rows are found
 
 # Extract Data, Convert to DataFrame
-df = pd.DataFrame(worksheet.get('A2:Z91'), columns=worksheet.row_values(1))
+df = pd.DataFrame(worksheet.get('A2:Z31'), columns=worksheet.row_values(1))
 
 # Original Data
 data = df.copy().clean_names()
@@ -59,7 +59,7 @@ while job.state != 'DONE':
     print(job.state)
 
 # Delete Exported Rows
-worksheet.delete_rows(2, 91)
+worksheet.delete_rows(2, 31)
 
 # Define SQL Query to Retrieve Open Weather Data from Google Cloud BigQuery
 sql = (
@@ -148,6 +148,7 @@ print(f"Data {data.shape} has been successfully retrieved, saved, and appended t
 
 # Exit 
 print(f'Stocks Data Export to Google BigQuery Successful')
+
 
 
 
